@@ -2,29 +2,34 @@ import {PayloadAction,createSlice} from '@reduxjs/toolkit';
 import type {UserState} from '../../types';
 
 
-const initialState= {
+const initialState: UserState= {
     uid: '',
     name: 'joe doe',
     isLoggedIn: false,
+    token: '',
+
   };
   
 export const userSlice = createSlice({
       name: "user",
       initialState,
       reducers: {
-        login(state, action: PayloadAction<UserState>){
-          state.uid = action.payload.uid;
+        login(state, action: PayloadAction<boolean>){
           state.isLoggedIn = true;
         },
         logout(state){
-          state.uid = '';
+          state.token = '';
           state.isLoggedIn = false;
         },
         changeName(state, action: PayloadAction<string>){
           state.name = action.payload
-        }
+        },
+        setToken(state, action: PayloadAction<string>){
+          state.token = action.payload
+
+        },
       }
   });
 
-export const {login, logout, changeName} = userSlice.actions
+export const {login, logout, changeName, setToken} = userSlice.actions
     

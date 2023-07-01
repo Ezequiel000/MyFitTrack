@@ -22,5 +22,5 @@ export interface UserState{
     uid: string;
     name: string;
     isLoggedIn: boolean;
-    initialize: boolean
+    token: string 
 }
