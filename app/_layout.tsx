@@ -5,6 +5,7 @@ import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import Provider from '../store/Provider'
+import { useSegments, useRouter } from 'expo-router'
 import { useAppSelector } from './hooks';
 
 export{
@@ -41,22 +42,42 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  const isAuthenticated = useAppSelector((state)=>(state.user.isLoggedIn))
-  
 
-  return (
+  // This hook will protect the route access based on user authentication.
+  function useProtectedRoute(user: boolean
+    ) {
+    const segments = useSegments();
+    const router = useRouter();
+
+    useEffect(() => {
+      const inAuthGroup = segments[0] === "(auth)";
+
+      if (
+        // If the user is not signed in and the initial segment is not anything in the auth group.
+        !user &&
+        !inAuthGroup
+      ) {
+        // Redirect to the sign-in page.
+        router.replace("/Login");
+      } else if (user && inAuthGroup) {
+        // Redirect away from the sign-in page.
+        router.replace("(tabs)");
+      }
+    }, [user, segments]);
+  }
+
+  const isAuthenticated = useAppSelector((state)=>(state.user.isLoggedIn));
+  useProtectedRoute(isAuthenticated);
+
+ return (
     <>
-    
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
-
-          {!isAuthenticated && <Stack.Screen name="(auth)" options={{ headerShown: false}} />}
-          {isAuthenticated && <Stack.Screen name="(tabs)" options={{ headerShown: false}} />}
-
+          <Stack.Screen name="(auth)" options={{ headerShown: false}} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false}} />
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         </Stack>
       </ThemeProvider>
-      
     </>
   );
 }

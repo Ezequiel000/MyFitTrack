@@ -3,28 +3,29 @@ import { useState, useContext } from "react";
 import { login } from "../../utils/auth-firebase";
 import { Alert } from "react-native";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { setToken } from "../../store/slices/userSlice"; 
+import { loginUser} from "../../store/slices/userSlice"; 
 // import LoadingOverlay from "../../components/ui/LoadingOverlay";
 import { Text, View } from '../../components/Themed'
+import AuthContent from "../../components/ui/AuthContent";
+import { useRouter } from "expo-router";
 
 
 function LoginScreen() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
-
-
   const dispatch = useAppDispatch();
-
+  const router = useRouter();
 
   async function loginHandler(email: string, password: string  ) {
     setIsAuthenticating(true);
     try {
       const token = await login(email, password);
       if (token) {
-        dispatch(setToken(token))
-        
+        dispatch(loginUser(token))
+        setIsAuthenticating(false)
+        router.push('/')
         
       } else {
-        setIsAuthenticating(false);
+        setIsAuthenticating(false)
         Alert.alert(
           "Authentication failed!",
           "Please check your credentials.",
@@ -37,9 +38,6 @@ function LoginScreen() {
         { text: "Okay" },
       ]);
     }
-
-
-
   }
 
   if (isAuthenticating) {
@@ -47,18 +45,7 @@ function LoginScreen() {
       <Text> Loading..........</Text>
     </View>
   }
-
-
-  return(
-    <View>
-
-      <Text>
-        This is the Login page. Hello
-      </Text>
-    </View>
-    
-    
-  );
+  return( <AuthContent isLogin onAuthenticate={loginHandler} />);
 
 };
 

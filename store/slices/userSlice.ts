@@ -14,22 +14,20 @@ export const userSlice = createSlice({
       name: "user",
       initialState,
       reducers: {
-        login(state, action: PayloadAction<boolean>){
-          state.isLoggedIn = true;
-        },
-        logout(state){
+        logoutUser(state){
           state.token = '';
           state.isLoggedIn = false;
         },
         changeName(state, action: PayloadAction<string>){
           state.name = action.payload
         },
-        setToken(state, action: PayloadAction<string>){
+        loginUser(state, action: PayloadAction<string>){
           state.token = action.payload
+          state.isLoggedIn = true
 
         },
       }
   });
 
-export const {login, logout, changeName, setToken} = userSlice.actions
+export const {loginUser, logoutUser, changeName} = userSlice.actions
     

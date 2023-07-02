@@ -6,12 +6,15 @@ interface PropTypes {
   children: React.ReactNode
 }
 
-export default function Provider(props: PropTypes) {
+
+export default function Provider(props: PropTypes) {  
   return (
+
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>
+
       {props.children}    
       </PersistGate>
     </ReduxProvider>
-  )
-}
+  );
+};
