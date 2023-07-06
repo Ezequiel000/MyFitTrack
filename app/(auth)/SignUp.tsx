@@ -5,18 +5,14 @@ import { Text, View } from '../../components/Themed'
 import AuthContent from "../../components/ui/AuthContent";
 import { useState} from "react";
 import { Alert } from "react-native";
-import { useRouter } from "expo-router";
+import type { AuthenticationData } from "../../types";
 
-interface AuthenticationData {
-  email: string;
-  password: string;
-}
+
 
 function SignupScreen(): JSX.Element {
   const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
-  const router = useRouter();
 
   async function signUpHandler({ email, password }: AuthenticationData): Promise<void> {
     setIsAuthenticating(true);
@@ -25,7 +21,6 @@ function SignupScreen(): JSX.Element {
       const token = await user.getIdToken();
       dispatch(loginUser(token))
       setIsAuthenticating(false)
-      router.push('/')
 
 
       
@@ -37,12 +32,6 @@ function SignupScreen(): JSX.Element {
       );
       setIsAuthenticating(false);
     }
-  }
-
-  if (isAuthenticating) {
-    <View>
-      <Text> Loading..........</Text>
-    </View>
   }
 
   return <AuthContent isLogin= {false} onAuthenticate={signUpHandler} />;

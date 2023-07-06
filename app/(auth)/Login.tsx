@@ -1,6 +1,7 @@
 
 import { useState, useContext } from "react";
 import { login } from "../../utils/auth-firebase";
+import { getIdToken } from "firebase/auth";
 import { Alert } from "react-native";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { loginUser} from "../../store/slices/userSlice"; 
@@ -8,21 +9,22 @@ import { loginUser} from "../../store/slices/userSlice";
 import { Text, View } from '../../components/Themed'
 import AuthContent from "../../components/ui/AuthContent";
 import { useRouter } from "expo-router";
+import type { AuthenticationData } from "../../types";
 
 
 function LoginScreen() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const dispatch = useAppDispatch();
-  const router = useRouter();
 
-  async function loginHandler(email: string, password: string  ) {
+  async function loginHandler({email, password}: AuthenticationData  ) {
     setIsAuthenticating(true);
     try {
-      const token = await login(email, password);
+      const user = await login(email, password);
+      const token = await user.getIdToken()
+      
       if (token) {
         dispatch(loginUser(token))
         setIsAuthenticating(false)
-        router.push('/')
         
       } else {
         setIsAuthenticating(false)
@@ -40,11 +42,6 @@ function LoginScreen() {
     }
   }
 
-  if (isAuthenticating) {
-    <View>
-      <Text> Loading..........</Text>
-    </View>
-  }
   return( <AuthContent isLogin onAuthenticate={loginHandler} />);
 
 };

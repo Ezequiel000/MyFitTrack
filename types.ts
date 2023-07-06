@@ -24,3 +24,7 @@ export interface UserState{
     isLoggedIn: boolean;
     token: string 
 }
+export interface AuthenticationData {
+    email: string;
+    password: string;
+  }
