@@ -5,7 +5,7 @@ import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import Provider from '../store/Provider'
-import { useSegments, useRouter } from 'expo-router'
+import { useSegments, router } from 'expo-router'
 import { useAppSelector } from './hooks';
 
 export{
@@ -35,6 +35,7 @@ export default function RootLayout() {
       {/* Keep the splash screen open until the assets have loaded. In the future, we should just support async font loading with a native version of font-display. */}
       {!loaded && <SplashScreen />}
       {loaded && <RootLayoutNav />}
+      {/* <RootLayoutNav/> */}
     </Provider>
     </>
   );
@@ -47,7 +48,7 @@ function RootLayoutNav() {
   function useProtectedRoute(user: boolean
     ) {
     const segments = useSegments();
-    const router = useRouter();
+    
 
     useEffect(() => {
       const inAuthGroup = segments[0] === "(auth)";
@@ -58,7 +59,7 @@ function RootLayoutNav() {
         !inAuthGroup
       ) {
         // Redirect to the sign-in page.
-        router.replace("/Login");
+        router.replace("(auth)");
       } else if (user && inAuthGroup) {
         // Redirect away from the sign-in page.
         router.replace("(tabs)");
@@ -66,8 +67,8 @@ function RootLayoutNav() {
     }, [user, segments]);
   }
 
-  const isAuthenticated = useAppSelector((state)=>(state.user.isLoggedIn));
-  useProtectedRoute(isAuthenticated);
+ 
+  useProtectedRoute(useAppSelector((state)=>(state.user.isLoggedIn)));
 
  return (
     <>

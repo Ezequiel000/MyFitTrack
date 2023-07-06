@@ -1,5 +1,7 @@
 import {PayloadAction,createSlice} from '@reduxjs/toolkit';
+import {logout} from '../../utils/auth-firebase'
 import type {UserState} from '../../types';
+
 
 
 const initialState: UserState= {
@@ -17,6 +19,8 @@ export const userSlice = createSlice({
         logoutUser(state){
           state.token = '';
           state.isLoggedIn = false;
+          
+
         },
         changeName(state, action: PayloadAction<string>){
           state.name = action.payload

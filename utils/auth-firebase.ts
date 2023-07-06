@@ -2,7 +2,6 @@ import {
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
-    getIdToken,
     signOut,
     UserCredential,
   } from "firebase/auth";
@@ -34,18 +33,21 @@ import {
     }
   }
   
-  export async function login(email: string, password: string): Promise<string> {
+  export async function login(email: string, password: string): Promise<UserCredential['user']> {
     try {
+      console.log('The email used:',email);
       const userCredential: UserCredential = await signInWithEmailAndPassword(
         auth,
         email,
         password
       );
       const user = userCredential.user;
-      const token: string = await getIdToken(user);
-      return token;
+      return user;
+      // const token: string = await getIdToken(user);
+      // return token;
+
     } catch (error: any) {
-      console.error("Error signing in:", error);
+      console.error("There was an error with the auth-firebase.ts login fumction:", error);
       throw error;
     }
   }
