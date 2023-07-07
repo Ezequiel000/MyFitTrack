@@ -5,7 +5,7 @@ import {
     signOut,
     UserCredential,
   } from "firebase/auth";
-  import { getDatabase, ref, set, DatabaseReference } from "firebase/database";
+  import { getDatabase, ref, set} from "firebase/database";
   import { appAuth as auth , app} from "./firebase-config";
   
   

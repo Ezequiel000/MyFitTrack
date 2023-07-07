@@ -1,37 +1,36 @@
 import {PayloadAction,createSlice} from '@reduxjs/toolkit';
 import {logout} from '../../utils/auth-firebase'
-import type {UserState} from '../../types';
+import { User } from 'firebase/auth';
+import type { UserData } from '../../types';
 
 
 
-const initialState: UserState= {
-    uid: '',
-    name: 'joe doe',
-    isLoggedIn: false,
-    token: '',
+// Your slice's state
+interface UserState {
+  isLoggedIn: boolean;
+  currentUser: User | null;
+}
 
-  };
-  
+// Define your initial state
+const initialState: UserState = {
+  isLoggedIn: false,
+  currentUser: null,
+};
+
 export const userSlice = createSlice({
-      name: "user",
-      initialState,
-      reducers: {
-        logoutUser(state){
-          state.token = '';
-          state.isLoggedIn = false;
-          
+  name: 'user',
+  initialState,
+  reducers: {
+    logoutUser(state) {
+      state.currentUser = null;
+      state.isLoggedIn = false;
+    },
+    loginUser(state, action: PayloadAction<User | null>) {
+      state.currentUser = action.payload;
+      state.isLoggedIn = true;
+    },
+  },
+});
 
-        },
-        changeName(state, action: PayloadAction<string>){
-          state.name = action.payload
-        },
-        loginUser(state, action: PayloadAction<string>){
-          state.token = action.payload
-          state.isLoggedIn = true
-
-        },
-      }
-  });
-
-export const {loginUser, logoutUser, changeName} = userSlice.actions
+export const {loginUser, logoutUser} = userSlice.actions
     

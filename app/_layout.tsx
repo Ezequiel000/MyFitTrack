@@ -29,49 +29,90 @@ export default function RootLayout() {
     if (error) throw error;
   }, [error]);
 
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
-    <>
     <Provider>
-      {/* Keep the splash screen open until the assets have loaded. In the future, we should just support async font loading with a native version of font-display. */}
-      {!loaded && <SplashScreen />}
-      {loaded && <RootLayoutNav />}
-      {/* <RootLayoutNav/> */}
+      {/* <AuthenticationFlow /> */}
+      <RootLayoutNav/>
+
     </Provider>
-    </>
+  )
+};
+
+function AuthenticationFlow() {
+  const user = useAppSelector((state) => (state.user.isLoggedIn));
+
+  if (user) {
+    return <AppFlow />;
+  } else {
+    return <AuthFlow />;
+  }
+}
+
+function AppFlow() {
+  const colorScheme = useColorScheme();
+  return (
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack screenOptions={{headerShown:false}}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+      </Stack>
+    </ThemeProvider>
   );
 }
+
+function AuthFlow() {
+  const colorScheme = useColorScheme();
+  return (
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack screenOptions={{headerShown:false}}>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      </Stack>
+    </ThemeProvider>
+  );
+}
+
+
+
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
-  // This hook will protect the route access based on user authentication.
-  function useProtectedRoute(user: boolean
-    ) {
-    const segments = useSegments();
-    
+  // // This hook will protect the route access based on user authentication.
+  // function useProtectedRoute(user: boolean) {
+  //   const segments = useSegments();
+  
+  //   useEffect(() => {
+  //     const inAuthGroup = segments[0] === "(auth)";
 
-    useEffect(() => {
-      const inAuthGroup = segments[0] === "(auth)";
-
-      if (
-        // If the user is not signed in and the initial segment is not anything in the auth group.
-        !user &&
-        !inAuthGroup
-      ) {
-        // Redirect to the sign-in page.
-        router.replace("(auth)");
-      } else if (user && inAuthGroup) {
-        // Redirect away from the sign-in page.
-        router.replace("(tabs)");
-      }
-    }, [user, segments]);
-  }
+  //     if (
+  //       // If the user is not signed in and the initial segment is not anything in the auth group.
+  //       !user &&
+  //       !inAuthGroup
+  //     ) {
+  //       // Redirect to the sign-in page.
+  //       router.replace("/Login");
+  //     } else if (user && inAuthGroup) {
+  //       // Redirect away from the sign-in page.
+  //       router.replace("(tabs)/two");
+  //     }
+  //   }, [user, segments]);
+  // }
 
  
-  useProtectedRoute(useAppSelector((state)=>(state.user.isLoggedIn)));
+  // useProtectedRoute(useAppSelector((state)=>(state.user.isLoggedIn)));
 
  return (
-    <>
+    
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="(auth)" options={{ headerShown: false}} />
@@ -79,6 +120,6 @@ function RootLayoutNav() {
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         </Stack>
       </ThemeProvider>
-    </>
+    
   );
 }

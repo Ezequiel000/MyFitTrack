@@ -12,8 +12,8 @@ export default function ModalScreen() {
   const dispatch = useAppDispatch()
 
   function onLogOut(){
-    logout();
-    dispatch(logoutUser())
+    logout()
+    dispatch(logoutUser());
   }
 
 

@@ -1,10 +1,10 @@
 
-import {combineReducers, configureStore} from '@reduxjs/toolkit';
+import {combineReducers, configureStore, MiddlewareArray} from '@reduxjs/toolkit';
 import {userSlice} from './slices/userSlice';
-import storage from 'redux-persist/lib/storage'; //storage for web
 import { persistReducer, persistStore } from 'redux-persist';
 import thunk from 'redux-thunk';
 import AsyncStorage from '@react-native-async-storage/async-storage'; //storage for react native
+import authMiddleware from './authMiddleware';
 
 
 const rootReducer = combineReducers({
@@ -22,8 +22,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer)
 export const store = configureStore({
   reducer: persistedReducer,
   devTools: process.env.NODE_ENV !== 'production',
-  middleware: [thunk]
-})
+  middleware: new MiddlewareArray().concat(authMiddleware, thunk),})
 
 export const persistor = persistStore(store)
 

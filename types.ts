@@ -1,3 +1,4 @@
+import { User } from "firebase/auth";
 
 export interface WorkingSet{
     reps: number;
@@ -19,12 +20,18 @@ export interface Workout{
 }
 
 export interface UserState{
-    uid: string;
-    name: string;
     isLoggedIn: boolean;
-    token: string 
+    currentUser: User | {};
+    
 }
 export interface AuthenticationData {
     email: string;
     password: string;
+  }
+
+ export interface UserData {
+    uid: string;
+    email: string;
+    displayName: string;
+   
   }

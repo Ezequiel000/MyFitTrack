@@ -10,27 +10,21 @@ import type { AuthenticationData } from "../../types";
 
 
 function SignupScreen(): JSX.Element {
-  const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
 
   async function signUpHandler({ email, password }: AuthenticationData): Promise<void> {
-    setIsAuthenticating(true);
     try {
       const user = await createUser(email, password);
-      const token = await user.getIdToken();
-      dispatch(loginUser(token))
-      setIsAuthenticating(false)
+      // const token = await user.getIdToken();
+      dispatch(loginUser(user))
 
-
-      
     } catch (error: any) {
       Alert.alert(
         "Authentication failed!",
         "Could not create user, please check your input and try again",
         [{ text: "Okay" }]
       );
-      setIsAuthenticating(false);
     }
   }
 
